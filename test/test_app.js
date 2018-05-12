@@ -23,6 +23,7 @@ describe('files', function() {
     });
 
     it('should return a json list', function(done) {
+        // todo : this didn't fail when the list was incomplete
         request(app)
             .get('/files')
             .set('Accept', 'application/json')
@@ -31,6 +32,35 @@ describe('files', function() {
             .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
                 chai.expect(resp.statusCode).to.equal(200);
                 chai.expect(resp.header['content-type']).to.include('application/json');
+                done();
+            });
+    });
+
+    it('should return a filtered json list from a get', function(done) {
+        // todo : this didn't fail when the list was incomplete
+        request(app)
+            .get('/files/pa')
+            .set('Accept', 'application/json')
+            .expect(['package-lock.json', 'package.json' ])  // todo check length?
+            .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
+                chai.expect(resp.statusCode).to.equal(200);
+                chai.expect(resp.header['content-type']).to.include('application/json');
+                // todo public not in ...
+                done();
+            });
+    });
+
+    it('should return a filtered json list from a post', function(done) {
+        // todo : this didn't fail when the list was incomplete
+        request(app)
+            .post('/files')
+            .send('pa')
+            .set('Accept', 'application/json')
+            .expect(['package-lock.json', 'package.json' ])  // todo check length?
+            .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
+                chai.expect(resp.statusCode).to.equal(200);
+                chai.expect(resp.header['content-type']).to.include('application/json');
+                // todo public not in ...
                 done();
             });
     });

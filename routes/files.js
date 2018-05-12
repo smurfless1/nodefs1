@@ -4,14 +4,6 @@ let fscache = require('../watcher');
 
 fscache.start();
 
-/*
-//todo clear?
-// this is used by the app object
-function start() {
-    fscache.start();
-};
-*/
-
 /* Stop the persistent file system cache watcher, or the process won't want to exit.*/
 router.get('/stop', function(req, res, next) {
     fscache.stop();
@@ -21,15 +13,70 @@ router.get('/stop', function(req, res, next) {
 Get the cached list of files from the filesystem watcher.
  */
 router.get('/', function(req, res, next) {
-    res.json(fscache.getcache());
+    try {
+        res.json(fscache.getcache());
+    } catch (e) {
+        res.json([]);
+    }
+});
+
+/**
+ * Return the matching files for a given pattern. Used to share code between get and post.
+ * @param pattern
+ */
+function pattern_searching(pattern) {
+    // yes, I can see the potential optimizations of b-trees, tries and so on,
+    // but i'm worried about the web services more today
+    results = [];
+    try {
+        files = fscache.getcache();
+        //todo security/cleaning of the pattern
+        let repattern = RegExp("^" + pattern + ".*");
+        files.forEach(elt => {
+            try {
+                if (repattern.test(elt)) {
+                    results.push(elt);
+                }
+            } catch (ee) {
+                console.log("An element match went horribly wrong.");
+            }
+        });
+        return results;
+    } catch (e) {
+        console.log("Something in the pattern matching loop went horribly wrong.")
+    }
+    return results;
+}
+
+/*
+Filter the list of cached files to only match files with a given starting sequence
+If all else fails it will return an empty list.
+ */
+router.get('/:prefix', function(req, res, next) {
+    try {
+        res.json(pattern_searching(req.params.prefix));
+    } catch (e) {
+        res.json([]);
+    }
 });
 
 /*
 Get the cached list of files from the filesystem watcher.
-Anything posted TO us is promptly ignored.
+The field "prefix" will be used similarly to the prefix arg in the get method
+
+This needs:
+Request is of type application/json
+Request actually parses to json
+otherwise you get an empty list
  */
 router.post('/', function(req, res, next) {
-    res.json(fscache.getcache());
+    try {
+        if (typeof req.body == 'undefined') { res.json([]); }
+        // todo clean the request body
+        res.json(pattern_searching(req.body.prefix));
+    } catch (e) {
+        res.json([]);
+    }
 });
 
 module.exports = router;
