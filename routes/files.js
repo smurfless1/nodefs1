@@ -38,12 +38,12 @@ function pattern_searching(pattern) {
                     results.push(elt);
                 }
             } catch (ee) {
-                console.log("An element match went horribly wrong.");
+                console.log("An element match went horribly wrong; continuing");
             }
         });
         return results;
     } catch (e) {
-        console.log("Something in the pattern matching loop went horribly wrong.")
+        console.log("Something in the pattern matching loop went horribly wrong; continuing.")
     }
     return results;
 }
