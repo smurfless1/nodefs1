@@ -32,6 +32,9 @@ describe('files', function() {
             .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
                 chai.expect(resp.statusCode).to.equal(200);
                 chai.expect(resp.header['content-type']).to.include('application/json');
+                chai.expect(resp.body).to.eql(
+                    ['.git', '.idea', 'app.js', 'bin', 'main.js', 'node_modules', 'package-lock.json', 'package.json', 'routes', 'test', 'watcher.js']
+                );
                 done();
             });
     });
@@ -64,6 +67,24 @@ describe('files', function() {
                 done();
             });
     });
+
+    it('long parameters do not damage the matching', function(done) {
+        request(app)
+            .get('/files/paradise_island_would_be_a_great_place_about_now')
+            .set('Accept', 'application/json')
+            .expect(['package-lock.json', 'package.json' ])  // todo check length?
+            //.expect('public').not.in.something
+            .end(function(err, resp) {
+                chai.expect(resp.statusCode).to.equal(200);
+                chai.expect(resp.header['content-type']).to.include('application/json');
+                // todo public not in ...
+                done();
+            });
+    });
+
+    // it('should return a filtered json list from a post', function(done) {
+
+    // todo now re-form the project to look nice. is there a model/view/controller thing at all?
 
     after(function() {
         // manually stop the filesystem watcher
