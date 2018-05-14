@@ -76,8 +76,6 @@ describe('files', function() {
 
     // it('should return a filtered json list from a post', function(done) {
 
-    // todo now re-form the project to look nice. is there a model/view/controller thing at all?
-
     after(function() {
         // manually stop the filesystem watcher
         request(app)

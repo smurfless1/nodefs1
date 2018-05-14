@@ -2,26 +2,6 @@ let express = require('express');
 let router = express.Router();
 let fscache = require('../../watcher');
 
-exports.start = fscache.start;
-
-/* Stop the persistent file system cache watcher, or the process won't want to exit.*/
-exports.stop = function(req, res, next) {
-    fscache.stop();
-    process.exit(0);
-};
-
-/*
-Get the cached list of files from the filesystem watcher.
- */
-exports.get_all_files = function(req, res, next) {
-    try {
-        res.json(fscache.getcache());
-    } catch (e) {
-        console.log('failed to read the filesystem cache, returning an empty response');
-        res.json([]);
-    }
-};
-
 /**
  * Return the matching files for a given pattern. Used to share code between get and post.
  * @param pattern
@@ -49,6 +29,30 @@ function pattern_searching(pattern) {
     }
     return results;
 }
+
+/* ==================== Visual Marker ========================================
+ * External API calls
+ * ==================== Visual Marker ========================================*/
+
+exports.start = fscache.start;
+
+/* Stop the persistent file system cache watcher, or the process won't want to exit.*/
+exports.stop = function(req, res, next) {
+    fscache.stop();
+    process.exit(0);
+};
+
+/*
+Get the cached list of files from the filesystem watcher.
+ */
+exports.get_all_files = function(req, res, next) {
+    try {
+        res.json(fscache.getcache());
+    } catch (e) {
+        console.log('failed to read the filesystem cache, returning an empty response');
+        res.json([]);
+    }
+};
 
 /*
 Filter the list of cached files to only match files with a given starting sequence
@@ -80,4 +84,8 @@ exports.post = function(req, res, next) {
         res.json([]);
     }
 };
+
+/* ==================== Visual Marker ========================================
+ * End external API calls
+ * ==================== Visual Marker ========================================*/
 
