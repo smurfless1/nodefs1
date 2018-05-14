@@ -40,3 +40,11 @@ To reinforce, there is no hidden expectation here -- we only would like you to
 do the first part.  We will not think less of you if you don't do the second
 part.  Do the second part only if you have time and want to give it a crack.
 */
+
+let router = require('express').Router();
+
+// Include the various routes we have set up
+router.use('/files', require('./files/fileRoutes'));
+router.use('/bytes', require('./bytes/byteRoutes'));
+
+module.exports = router;
