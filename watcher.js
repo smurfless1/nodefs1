@@ -66,7 +66,9 @@ exports.start = function start() {
 };
 
 exports.stop = function stop() {
-    watcher1.stop();
+    watcher1.stop().then(function() {
+        console.log('stopped watching');
+    });
 };
 
 exports.getcache = function getcache() {

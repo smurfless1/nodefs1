@@ -12,4 +12,7 @@ router.route('/')
 router.route('/:prefix')
     .get(controller.get_with_prefix);
 
+router.route('/close')
+    .get(controller.stop);
+
 module.exports = router;

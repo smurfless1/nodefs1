@@ -7,6 +7,7 @@ exports.start = fscache.start;
 /* Stop the persistent file system cache watcher, or the process won't want to exit.*/
 exports.stop = function(req, res, next) {
     fscache.stop();
+    process.exit(0);
 };
 
 /*
