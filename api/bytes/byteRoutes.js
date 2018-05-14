@@ -6,10 +6,10 @@ let controller = require('./byteController');
 var router = require('express').Router();
 
 router.route('/')
-    .get(controller.get_all_files);
+    //.get(controller.get_all_files) - discussion in byteController.js
+    .post(controller.post);
 
 router.route('/:prefix')
-    .get(controller.get_with_prefix)
-    .post(controller.post);
+    .get(controller.get_with_prefix);
 
 module.exports = router;
