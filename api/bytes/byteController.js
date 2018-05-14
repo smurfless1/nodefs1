@@ -84,8 +84,8 @@ function create_hashes_for(afile) {
                     readable.on('readable', () => {
                         let chunk;
                         if (null !== (chunk = readable.read(bytestoread))) {
-                            //console.log(`Received ${chunk.length} bytes of data.`);
-                            let result = crypto.createHash('md5').update(chunk).digest("hex");
+                            console.log(`Received ${chunk.length} bytes of data.`);
+                            let result = hash.update(chunk).digest("hex");
                             hashesOfSize[bytestoread][result].push(afile);
                         }
                         readable.close();
@@ -112,8 +112,8 @@ function create_hashes_for(afile) {
         };
 
         Promise.all(allreads()).then(list_of_hashes => {
-            //console.log('done!');
-            //console.log(list_of_hashes);
+            console.log('done!');
+            console.log(list_of_hashes);
         });
     });
 
@@ -124,22 +124,20 @@ function create_hashes_for(afile) {
  * @param pattern bytes to match
  */
 function pattern_searching(pattern) {
-    // yes, I can see the potential optimizations of b-trees, tries and so on,
-    // but i'm worried about the web services more today
     results = [];
     try {
-        files = fscache.getcache();
-        //todo security/cleaning of the pattern
-        let repattern = RegExp("^" + pattern + ".*");
-        files.forEach(elt => {
-            try {
-                if (repattern.test(elt)) {
-                    results.push(elt);
-                }
-            } catch (ee) {
-                console.log("An element match went horribly wrong; continuing");
-            }
-        });
+        // make hashes for the longest substring of known length in pattern
+        let longest = longest_matching_size(pattern);
+        let hashme = pattern.slice(0, longest);
+        console.log(`${hashme.length}`);
+        let resulthash = hash.update(hashme).digest("hex");
+
+        let tbl = hashesOfSize[longest];
+        let ll = tbl[resulthash];
+        for (const fnamekey in ll) {
+            results.push( ll[fnamekey] );
+        }
+
         return results;
     } catch (e) {
         console.log("Something in the pattern matching loop went horribly wrong; continuing.")
@@ -156,7 +154,7 @@ exports.longest_matching_size =  longest_matching_size;
 
 exports.start = () => {
     fscache.start;
-
+    console.log('starting');
     for (const filename in fscache.getcache()) {
         create_hashes_for(filename).then(()=>{console.log(`Cached hashes for ${filename}`)});
     }

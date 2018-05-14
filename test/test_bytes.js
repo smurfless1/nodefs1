@@ -6,7 +6,7 @@ let expect = chai.expect;
 
 // integration tests, until I can find a satisfactory way to do unit tests
 
-describe('files', function() {
+describe('bytes', function() {
     it('should accept connections to the /bytes router', function (done) {
         request(app)
             .get('/bytes')
