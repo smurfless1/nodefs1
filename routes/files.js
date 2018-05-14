@@ -16,6 +16,7 @@ router.get('/', function(req, res, next) {
     try {
         res.json(fscache.getcache());
     } catch (e) {
+        console.log('failed to read the filesystem cache, returning an empty response');
         res.json([]);
     }
 });
