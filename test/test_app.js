@@ -30,7 +30,7 @@ describe('files', function() {
                 chai.expect(resp.statusCode).to.equal(200);
                 chai.expect(resp.header['content-type']).to.include('application/json');
                 chai.expect(resp.body).to.eql(
-                    ['.git', '.idea', 'app.js', 'bin', 'main.js', 'node_modules', 'package-lock.json', 'package.json', 'routes', 'test', 'watcher.js']
+                    ['.git', '.idea', 'api', 'app.js', 'appsetup.js', 'bin', 'main.js', 'node_modules', 'package-lock.json', 'package.json', 'pytest', 'routes', 'test', 'watcher.js']
                 );
                 done();
             });
@@ -84,6 +84,7 @@ describe('files', function() {
             .get('/files/close')
             .end(function(err,resp){
                 chai.expect(resp.statusCode).to.equal(200);
+                done();
             });
     });
 });
