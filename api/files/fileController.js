@@ -73,7 +73,7 @@ otherwise you get an empty list
  */
 exports.post = function(req, res, next) {
     try {
-        if (typeof req.body == 'undefined') { res.json([]); }
+        if (typeof req.body === 'undefined') { res.json([]); }
         // todo clean the request body
         res.json(pattern_searching(req.body.prefix));
     } catch (e) {

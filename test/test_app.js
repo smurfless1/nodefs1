@@ -23,47 +23,60 @@ describe('files', function() {
     });
 
     it('should return a json list', function(done) {
-        // todo : this didn't fail when the list was incomplete
         request(app)
             .get('/files')
             .set('Accept', 'application/json')
-            .expect(['.idea', 'app.js', 'bin', 'main.js', 'node_modules', 'package-lock.json',
-                'package.json', 'public', 'routes', 'test', 'watcher.js'])
             .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
                 chai.expect(resp.statusCode).to.equal(200);
                 chai.expect(resp.header['content-type']).to.include('application/json');
+                chai.expect(resp.body).to.eql(
+                    ['.git', '.idea', 'app.js', 'bin', 'main.js', 'node_modules', 'package-lock.json', 'package.json', 'routes', 'test', 'watcher.js']
+                );
                 done();
             });
     });
 
     it('should return a filtered json list from a get', function(done) {
-        // todo : this didn't fail when the list was incomplete
         request(app)
             .get('/files/pa')
             .set('Accept', 'application/json')
-            .expect(['package-lock.json', 'package.json' ])  // todo check length?
             .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
                 chai.expect(resp.statusCode).to.equal(200);
                 chai.expect(resp.header['content-type']).to.include('application/json');
-                // todo public not in ...
+                chai.expect(resp.body).to.eql( ['package-lock.json', 'package.json'] );
                 done();
             });
     });
 
     it('should return a filtered json list from a post', function(done) {
-        // todo : this didn't fail when the list was incomplete
         request(app)
             .post('/files')
-            .send('pa')
+            .send({'prefix':'pa'})
             .set('Accept', 'application/json')
-            .expect(['package-lock.json', 'package.json' ])  // todo check length?
             .end(function(err, resp) {  // note to self - this HAPPENS at the end, not ends the call
                 chai.expect(resp.statusCode).to.equal(200);
                 chai.expect(resp.header['content-type']).to.include('application/json');
-                // todo public not in ...
+                chai.expect(resp.body).to.eql( ['package-lock.json', 'package.json'] );
                 done();
             });
     });
+
+    it('long parameters do not damage the matching', function(done) {
+        request(app)
+            .get('/files/paradise_island_would_be_a_great_place_about_now')
+            .set('Accept', 'application/json')
+            //.expect('public').not.in.something
+            .end(function(err, resp) {
+                chai.expect(resp.statusCode).to.equal(200);
+                chai.expect(resp.header['content-type']).to.include('application/json');
+                chai.expect(resp.body).to.eql( [] );
+                done();
+            });
+    });
+
+    // it('should return a filtered json list from a post', function(done) {
+
+    // todo now re-form the project to look nice. is there a model/view/controller thing at all?
 
     after(function() {
         // manually stop the filesystem watcher

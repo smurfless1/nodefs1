@@ -41,6 +41,42 @@ do the first part.  We will not think less of you if you don't do the second
 part.  Do the second part only if you have time and want to give it a crack.
 */
 
+/**
+ * Before I venture farther off:
+ * What if we kept various lengths of hashes on the starts of each file:
+ * len | hash
+ * 1 | ...
+ * for each length as it doubles up to the max 4000:
+ * 1, 2, 4, 8, 16, 32, 64, ...
+ *
+ * When searching for a pattern:
+ * 1. get the biggest number we can capture from the above range thing.
+ * 2. hash that length of the source pattern
+ * 3. compare that to the hashes we know of the known-cached files
+ * 4. any file that matches, do the deep compare, and add if matching
+ *
+ * This requires:
+ *  for every file, we need multiple hashes - one per size
+ *  {
+ *  sizeA : { hash1 : filename1, hash2: filename2 },
+ *  sizeB : { hash3 : filename3 },
+ *  ...
+ *  }
+ *  I could see this being accessed as:
+ *  var matched = [];
+ *  var knownsize = known_size_for_pattern(mypattern);
+ *  var hash_to_find = hash_for(mypattern, knownsize);
+ *  var table_to_use = sizehashes[knownsize];
+ *  if hash_to_find in sizehashes[knownsize] {
+ *      // attempt to add the file name
+ *      matched.add(sizehashes[knownsize][hash_to_find];
+ *  }
+
+ let crypto = require('crypto');
+ crypto.createHash('md5').update(data).digest("hex");
+
+ */
+
 let router = require('express').Router();
 
 // Include the various routes we have set up
