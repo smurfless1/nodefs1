@@ -82,7 +82,9 @@ describe('files', function() {
             .get('/files/close')
             .end(function(err,resp){
                 chai.expect(resp.statusCode).to.equal(200);
-                done();
+                if (typeof done !== 'undefined') {
+                    done();
+                }
             });
     });
 });

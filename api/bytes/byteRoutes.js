@@ -1,7 +1,7 @@
 let controller = require('./byteController');
 
 // This is intentional! We want to start the filesystem cache before we serve requests.
-//controller.start();
+controller.start();
 
 var router = require('express').Router();
 
